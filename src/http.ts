@@ -26,6 +26,9 @@ const MAX_BODY_BYTES = 5 * 1024 * 1024
 export const name = 'okf-knowledge-web-api'
 export const inject = ['webServer']
 
+/** Route prefix; the register call and the path stripping share this constant. */
+export const API_PREFIX = '/okf-knowledge/api'
+
 interface ScopeView extends KnowledgeScope {
   exists: boolean
 }
@@ -115,7 +118,9 @@ export function apply(ctx: Context, config: ResolvedConfig): void {
       return
     }
     const url = new URL(req.url ?? '/', 'http://localhost')
-    const route = url.pathname.replace(/^\/knowledge\/api\/?/, '')
+    const route = url.pathname.startsWith(API_PREFIX)
+      ? url.pathname.slice(API_PREFIX.length).replace(/^\//, '')
+      : url.pathname
     try {
       if (req.method === 'GET' && route === 'scopes') {
         const scopes = await currentScopes()
@@ -235,7 +240,7 @@ export function apply(ctx: Context, config: ResolvedConfig): void {
 
   ctx.effect(() => ctx.webServer.register({
     kind: 'prefix',
-    path: '/okf-knowledge/api',
+    path: API_PREFIX,
     handler: (req, res) => void handler(req, res),
   }))
 }
