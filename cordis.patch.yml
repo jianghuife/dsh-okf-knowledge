@@ -1,0 +1,7 @@
+# Default composition for the dsh-okf-knowledge bundle. `dsh plugin add dsh-okf-knowledge`
+# appends this package to the profile's dsh.profile.bundles, which activates
+# this layer automatically. Override with a `- id: okf-knowledge` patch in the
+# profile's own cordis.patch.yml.
+- insert:
+    - id: okf-knowledge
+      name: dsh-okf-knowledge
