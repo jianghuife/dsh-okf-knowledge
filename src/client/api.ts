@@ -24,17 +24,13 @@ export interface FileValidation {
   ok: boolean
   errors: OkfIssue[]
   warnings: OkfIssue[]
-  trust: 'unverified' | 'machine-confirmed' | 'human-reviewed'
   meta?: {
     type?: string
     title?: string
     description?: string
     tags?: string[]
-    status?: string
-    stale_after?: string
     sources?: { resource: string; title?: string }[]
     generated?: { by: string; at: string }
-    verified?: { by: string; at: string }[]
   }
 }
 

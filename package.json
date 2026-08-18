@@ -1,6 +1,6 @@
 {
   "name": "dsh-okf-knowledge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Project knowledge base plugin for DeepSeek Harness: Open Knowledge Format (OKF) bundles per project, agent search/read tools, a Web UI browser/editor, and a bundled OKF authoring skill",
   "type": "module",
   "main": "./dist/index.js",

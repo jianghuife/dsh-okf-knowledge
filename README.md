@@ -21,7 +21,7 @@ can inspect, audit, and edit every entry.
   (default `<dsh home>/knowledge/shared`) for cross-project standards and runbooks.
 - **Conversation tools** — `okf_search`, `okf_read`, `okf_validate` — scoped
   to the calling session's project (nearest `.git` ancestor of the session cwd) and the shared
-  roots. Results carry document ids for citation and caveats for stale/draft/unverified entries.
+  roots. Results carry document ids for citation and validation caveats (e.g. missing sources).
 - **Web UI entry** — a Knowledge button in the sidebar footer opens a browser/editor panel:
   scope picker, directory tree, rendered Markdown + frontmatter view, raw source view, and an
   editor with save-time OKF validation and optimistic-concurrency conflict detection (no
@@ -71,11 +71,11 @@ Scopes are derived from trusted context only (R-009):
 ## Knowledge format
 
 Every concept is Markdown with YAML frontmatter: required `type`; recommended `title`,
-`description`; provenance via `sources`; trust via `generated`/`verified` (actor convention
-`human:<id>` / `<producer>/<version>` / `process:<id>`); lifecycle via `status`
-(`draft`/`stable`/`deprecated`) and `stale_after`. Reserved files: `index.md` (listing, bundle
-root carries `okf_version: "0.2"`) and `log.md` (dated change history). Unknown frontmatter
-keys are preserved.
+`description`; provenance via `sources` and `generated` (actor convention `human:<id>` /
+`<producer>/<version>` / `process:<id>`). Reserved files: `index.md` (listing, bundle root
+carries `okf_version: "0.2"`) and `log.md` (dated change history). Other OKF fields
+(`verified`, `status`, `stale_after`) and unknown frontmatter keys are preserved but not
+interpreted by this plugin.
 
 ## Development
 

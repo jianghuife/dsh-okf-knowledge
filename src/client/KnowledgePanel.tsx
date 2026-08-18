@@ -143,9 +143,6 @@ export function createKnowledgePanel(t: Translate) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             <strong style={{ fontSize: 14 }}>{meta?.title ?? props.record.path}</strong>
             {meta?.type !== undefined && <span style={chipStyle}>{meta.type}</span>}
-            <span style={chipStyle}>{meta?.status ?? 'stable'}</span>
-            <span style={chipStyle}>{t(`file.trust.${props.record.validation.trust}`)}</span>
-            {meta?.stale_after !== undefined && <span style={chipStyle}>stale_after: {meta.stale_after}</span>}
             <span style={{ flex: 1 }} />
             <Button onClick={() => setTab('preview')} variant={tab === 'preview' ? 'primary' : 'ghost'}>{t('tab.preview')}</Button>
             <Button onClick={() => setTab('source')} variant={tab === 'source' ? 'primary' : 'ghost'}>{t('tab.source')}</Button>
@@ -328,7 +325,6 @@ export function createKnowledgePanel(t: Translate) {
         `type: ${type}`,
         `title: ${title}`,
         'description: ',
-        'status: stable',
         'sources:',
         '  - resource: ',
         'generated:',

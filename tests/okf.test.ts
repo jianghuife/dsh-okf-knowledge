@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   appendLogEntry, bundleIndexTemplate, conceptTemplate, splitFrontmatter,
-  trustTier, validateConcept,
+  validateConcept,
 } from '../src/okf.js'
 
 const VALID = `---
@@ -45,7 +45,6 @@ describe('validateConcept', () => {
     const result = validateConcept(VALID)
     expect(result.ok).toBe(true)
     expect(result.errors).toEqual([])
-    expect(result.trust).toBe('human-reviewed')
     expect(result.meta?.type).toBe('Decision')
   })
 
@@ -78,18 +77,15 @@ describe('validateConcept', () => {
   it('treats a bare verified mapping as a one-element list', () => {
     const result = validateConcept('---\ntype: X\nverified:\n  by: human:bob\n  at: 2026-01-01T00:00:00Z\n---\nbody')
     expect(result.ok).toBe(true)
-    expect(result.trust).toBe('human-reviewed')
+    expect(result.meta?.verified).toHaveLength(1)
   })
 
-  it('warns on staleness and drafts', () => {
+  it('does not warn about lifecycle or trust fields', () => {
     const result = validateConcept(
       '---\ntype: X\ntitle: T\ndescription: D\nstatus: draft\nstale_after: 2026-01-01\nsources:\n  - resource: a.md\n---\nbody',
-      { today: '2026-08-18' },
     )
     expect(result.ok).toBe(true)
-    const fields = result.warnings.map((issue) => issue.field)
-    expect(fields).toContain('status')
-    expect(fields).toContain('stale_after')
+    expect(result.warnings).toEqual([])
   })
 
   it('preserves unknown keys as extensions', () => {
@@ -99,21 +95,12 @@ describe('validateConcept', () => {
   })
 })
 
-describe('trustTier', () => {
-  it('derives tiers from actors', () => {
-    expect(trustTier(undefined)).toBe('unverified')
-    expect(trustTier([])).toBe('unverified')
-    expect(trustTier([{ by: 'agent/x', at: '2026-01-01T00:00:00Z' }])).toBe('machine-confirmed')
-    expect(trustTier([{ by: 'human:a', at: '2026-01-01T00:00:00Z' }])).toBe('human-reviewed')
-  })
-})
-
 describe('templates', () => {
-  it('concept template validates as stable', () => {
+  it('concept template validates without lifecycle fields', () => {
     const raw = conceptTemplate({ type: 'Runbook', title: 'Restart the queue', generatedBy: 'agent/test' })
     const result = validateConcept(raw)
     expect(result.errors.filter((issue) => !issue.field.startsWith('sources'))).toEqual([])
-    expect(result.meta?.status).toBe('stable')
+    expect(result.meta?.status).toBeUndefined()
   })
 
   it('bundle index template carries okf_version', () => {

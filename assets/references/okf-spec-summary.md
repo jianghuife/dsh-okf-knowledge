@@ -16,9 +16,7 @@ file is a concept document.
 | `tags` | optional | list of short strings |
 | `sources` | optional | list; each entry: `resource` (required), `id`, `title`, `author`, `usage_count`, `last_modified` |
 | `generated` | optional | `{ by, at }` — who/what produced the content, ISO timestamp |
-| `verified` | optional | list (or single mapping) of `{ by, at }` verification events |
-| `status` | optional | `draft` \| `stable` \| `deprecated` (default `stable`) |
-| `stale_after` | optional | ISO date `YYYY-MM-DD` |
+| `verified` / `status` / `stale_after` | optional | defined by OKF; preserved but not used by this plugin |
 
 Unknown keys are allowed and must be preserved by consumers. Extensions go under a
 namespaced key (e.g. `specpilot:` or `myorg:`).
@@ -28,9 +26,6 @@ namespaced key (e.g. `specpilot:` or `myorg:`).
 - Agents: `<producer>/<version>` (e.g. `reference_agent/gemini-2.5-pro`)
 - Humans: `human:<id>`
 - Processes: `process:<id>`
-
-Trust tiers derived from `verified`: absent → *unverified*; non-`human:` actors only →
-*machine-confirmed*; any `human:` actor → *human-reviewed*.
 
 ## Links
 

@@ -23,7 +23,7 @@ import * as webApi from './http.js'
 export { Config } from './config.js'
 export {
   validateConcept, splitFrontmatter, conceptTemplate, bundleIndexTemplate,
-  trustTier, OKF_VERSION,
+  OKF_VERSION,
 } from './okf.js'
 
 export const name = 'okf-knowledge'

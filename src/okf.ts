@@ -18,7 +18,6 @@ export const OKF_VERSION = '0.2'
 export const RESERVED_FILES = new Set(['index.md', 'log.md'])
 
 export type OkfStatus = 'draft' | 'stable' | 'deprecated'
-export type TrustTier = 'unverified' | 'machine-confirmed' | 'human-reviewed'
 
 export interface OkfActorStamp {
   by: string
@@ -58,10 +57,9 @@ export interface OkfValidation {
   ok: boolean
   /** Structural violations; a conforming OKF consumer would reject or misread these. */
   errors: OkfIssue[]
-  /** Advisory findings: staleness, missing recommended fields, trust gaps. */
+  /** Advisory findings: missing recommended fields. */
   warnings: OkfIssue[]
   meta: OkfMeta | undefined
-  trust: TrustTier
   /** True when the document parsed far enough to inspect fields. */
   parsed: boolean
 }
@@ -134,18 +132,12 @@ const PORTABLE_KEYS = new Set([
   'generated', 'verified', 'status', 'stale_after',
 ])
 
-/** Derive the advisory trust tier from `verified` actors (OKF actor convention). */
-export function trustTier(verified: OkfActorStamp[] | undefined): TrustTier {
-  if (verified === undefined || verified.length === 0) return 'unverified'
-  return verified.some((entry) => entry.by.startsWith('human:')) ? 'human-reviewed' : 'machine-confirmed'
-}
-
 /**
  * Validate one OKF concept document. Reserved files (`index.md`, `log.md`)
  * only require parseable frontmatter when present; concepts additionally
  * require a non-empty `type`.
  */
-export function validateConcept(raw: string, options: { fileName?: string; today?: string } = {}): OkfValidation {
+export function validateConcept(raw: string, options: { fileName?: string } = {}): OkfValidation {
   const reserved = options.fileName !== undefined && RESERVED_FILES.has(options.fileName)
   const errors: OkfIssue[] = []
   const warnings: OkfIssue[] = []
@@ -153,10 +145,10 @@ export function validateConcept(raw: string, options: { fileName?: string; today
 
   if (!split.hasFrontmatter) {
     if (reserved) {
-      return { ok: true, errors, warnings, meta: undefined, trust: 'unverified', parsed: true }
+      return { ok: true, errors, warnings, meta: undefined, parsed: true }
     }
     errors.push({ field: '(frontmatter)', message: 'concept documents require a YAML frontmatter block delimited by ---' })
-    return { ok: false, errors, warnings, meta: undefined, trust: 'unverified', parsed: false }
+    return { ok: false, errors, warnings, meta: undefined, parsed: false }
   }
 
   let data: unknown
@@ -164,11 +156,11 @@ export function validateConcept(raw: string, options: { fileName?: string; today
     data = parseYaml(split.frontmatterText)
   } catch (error) {
     errors.push({ field: '(frontmatter)', message: `YAML does not parse: ${error instanceof Error ? error.message : String(error)}` })
-    return { ok: false, errors, warnings, meta: undefined, trust: 'unverified', parsed: false }
+    return { ok: false, errors, warnings, meta: undefined, parsed: false }
   }
   if (!isPlainObject(data)) {
     errors.push({ field: '(frontmatter)', message: 'frontmatter must be a YAML mapping' })
-    return { ok: false, errors, warnings, meta: undefined, trust: 'unverified', parsed: false }
+    return { ok: false, errors, warnings, meta: undefined, parsed: false }
   }
 
   const meta: OkfMeta = { extra: {} }
@@ -260,18 +252,6 @@ export function validateConcept(raw: string, options: { fileName?: string; today
     if (meta.sources === undefined || meta.sources.length === 0) {
       warnings.push({ field: 'sources', message: 'no provenance: the concept cites no source material' })
     }
-    const tier = trustTier(meta.verified)
-    if (tier === 'unverified') {
-      warnings.push({ field: 'verified', message: 'unverified: no verification event recorded' })
-    } else if (tier === 'machine-confirmed') {
-      warnings.push({ field: 'verified', message: 'machine-confirmed only: no human: actor has verified this concept' })
-    }
-    if (meta.status === 'draft') warnings.push({ field: 'status', message: 'draft: not yet reviewed knowledge' })
-    if (meta.status === 'deprecated') warnings.push({ field: 'status', message: 'deprecated: superseded or withdrawn knowledge' })
-    const today = options.today ?? new Date().toISOString().slice(0, 10)
-    if (meta.stale_after !== undefined && today >= meta.stale_after) {
-      warnings.push({ field: 'stale_after', message: `stale: past its stale_after date (${meta.stale_after})` })
-    }
   }
 
   return {
@@ -279,7 +259,6 @@ export function validateConcept(raw: string, options: { fileName?: string; today
     errors,
     warnings,
     meta,
-    trust: trustTier(meta.verified),
     parsed: true,
   }
 }
@@ -303,7 +282,6 @@ export function conceptTemplate(input: {
     type: input.type,
     title: input.title,
     description: input.description ?? '',
-    status: 'stable',
   }
   if (input.tags !== undefined && input.tags.length > 0) frontmatter.tags = input.tags
   if (input.generatedBy !== undefined) {

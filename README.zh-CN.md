@@ -19,7 +19,7 @@
   （默认 `<dsh home>/knowledge/shared`），用于工程规范、安全规范、通用操作手册等跨项目内容。
 - **对话工具**：`okf_search` / `okf_read` / `okf_validate`，
   默认只作用于当前会话所在项目（session cwd 向上最近的 `.git` 祖先）与共享知识；
-  结果携带可引用的知识条目 id，并对过期 / 草稿 / 未验证条目给出提示。
+  结果携带可引用的知识条目 id 与校验提示（如缺少来源）。
 - **Web 入口**：侧边栏底部“知识库”按钮打开浏览与编辑面板——范围选择、目录树、
   渲染视图 + frontmatter、原文视图、编辑器；保存前 OKF 校验、保存失败展示明确错误、
   基于内容哈希的乐观锁防止并发编辑静默覆盖。
@@ -65,10 +65,10 @@ dsh --profile web --dump-config
 ## 知识格式
 
 每条知识 = YAML frontmatter + Markdown 正文：必填 `type`；推荐 `title`、`description`；
-来源 `sources`；信任 `generated` / `verified`（actor 约定 `human:<id>` /
-`<producer>/<version>` / `process:<id>`）；生命周期 `status`（`draft`/`stable`/`deprecated`）
-与 `stale_after`。保留文件：`index.md`（目录，bundle 根携带 `okf_version: "0.2"`）与
-`log.md`（按日期的变更记录）。未知 frontmatter 键会被保留。
+来源 `sources` 与 `generated`（actor 约定 `human:<id>` / `<producer>/<version>` /
+`process:<id>`）。保留文件：`index.md`（目录，bundle 根携带 `okf_version: "0.2"`）与
+`log.md`（按日期的变更记录）。OKF 的其他字段（`verified`、`status`、`stale_after`）
+和未知 frontmatter 键会被原样保留，但本插件不再解释或展示它们。
 
 ## 开发
 

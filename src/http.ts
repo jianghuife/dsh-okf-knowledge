@@ -153,17 +153,13 @@ export function apply(ctx: Context, config: ResolvedConfig): void {
             ok: record.validation.ok,
             errors: record.validation.errors,
             warnings: record.validation.warnings,
-            trust: record.validation.trust,
             meta: record.validation.meta === undefined ? undefined : {
               type: record.validation.meta.type,
               title: record.validation.meta.title,
               description: record.validation.meta.description,
               tags: record.validation.meta.tags,
-              status: record.validation.meta.status,
-              stale_after: record.validation.meta.stale_after,
               sources: record.validation.meta.sources,
               generated: record.validation.meta.generated,
-              verified: record.validation.meta.verified,
             },
           },
         })
@@ -199,7 +195,7 @@ export function apply(ctx: Context, config: ResolvedConfig): void {
         const body = await readBody(req) as { content?: string; fileName?: string }
         if (typeof body.content !== 'string') return sendError(res, 400, 'bad-request', 'content is required')
         const result = validateConcept(body.content, typeof body.fileName === 'string' ? { fileName: body.fileName } : {})
-        sendJson(res, 200, { ok: result.ok, errors: result.errors, warnings: result.warnings, trust: result.trust })
+        sendJson(res, 200, { ok: result.ok, errors: result.errors, warnings: result.warnings })
         return
       }
 

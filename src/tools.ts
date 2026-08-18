@@ -49,7 +49,7 @@ export function registerKnowledgeTools(ctx: Context, config: ResolvedConfig): vo
       'Search the knowledge base of the current project plus shared knowledge (Open Knowledge Format bundles).',
       'Use this before answering questions that project knowledge could settle: conventions, decisions, runbooks, domain terms, specs.',
       'Returns document ids to pass to okf_read. Results are limited to the current project and shared bundles.',
-      'Cite the returned ids in answers so users can audit the source. If results carry caveats (stale, draft, unverified), tell the user.',
+      'Cite the returned ids in answers so users can audit the source. If results carry caveats (for example missing sources), tell the user.',
     ].join(' '),
     parameters: {
       query: { type: 'string', required: true, description: 'Search terms (matches title, tags, description, type, path, and body)' },
@@ -90,8 +90,7 @@ export function registerKnowledgeTools(ctx: Context, config: ResolvedConfig): vo
     name: 'okf_read',
     description: [
       'Read one knowledge document by id (from okf_search), e.g. "project/decisions/auth.md" or "shared/standards/api.md".',
-      'Returns OKF frontmatter, trust/staleness caveats, and the Markdown body.',
-      'Always surface the returned caveats to the user when the document is stale, draft, deprecated, or unverified.',
+      'Returns OKF frontmatter, validation caveats, and the Markdown body.',
     ].join(' '),
     parameters: {
       id: { type: 'string', required: true, description: 'Scoped document id: <scope>/<bundle-relative-path>.md' },
@@ -119,7 +118,6 @@ export function registerKnowledgeTools(ctx: Context, config: ResolvedConfig): vo
           `id: ${scope.id}/${record.path}`,
           `title: ${meta?.title ?? '(untitled)'}`,
           `type: ${meta?.type ?? '(missing)'}`,
-          `status: ${meta?.status ?? 'stable'} | trust: ${record.validation.trust}`,
           meta?.sources !== undefined && meta.sources.length > 0
             ? `sources: ${meta.sources.map((source) => source.resource).join(', ')}`
             : 'sources: (none recorded)',

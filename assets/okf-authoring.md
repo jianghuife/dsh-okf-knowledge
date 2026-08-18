@@ -39,7 +39,7 @@ conflict to the user instead of picking a side silently.
 ## Write the frontmatter
 
 Every concept file starts with YAML frontmatter. Required: `type`. Strongly recommended:
-`title`, `description`, `sources`, `generated`, `status`.
+`title`, `description`, `sources`, `generated`.
 
 ```markdown
 ---
@@ -53,7 +53,6 @@ sources:
 generated:
   by: <agent>/<model>
   at: 2026-08-18T10:00:00Z
-status: stable
 ---
 
 # Use PostgreSQL for the metadata store
@@ -65,15 +64,9 @@ Rules:
 
 - `generated.by` is your actor id (`<producer>/<version>`); humans are `human:<id>`,
   processes `process:<id>`.
-- Entries you write are formal knowledge: use `status: stable` (or omit `status`, which
-  defaults to stable). Use `draft` only when the user says the content is tentative, and
-  `deprecated` when knowledge is superseded. Never add a `verified` entry with a `human:`
-  actor yourself — verification records who actually reviewed, and only that person adds it.
 - Every `sources[].resource` must point at real material (repo path or URL). If the user
   dictated the knowledge with no artifact, record them as the source
   (`resource: "conversation with human:<id>"` is acceptable; prefer a real artifact).
-- Add `stale_after: YYYY-MM-DD` when the knowledge has a natural expiry.
-
 ## Preserve provenance in the body
 
 Attribute specific claims with Markdown footnotes keyed to `sources[].id` when a file draws
