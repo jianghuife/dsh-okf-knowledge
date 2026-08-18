@@ -1,10 +1,17 @@
 # dsh-okf-knowledge
 
+[![npm](https://img.shields.io/npm/v/dsh-okf-knowledge)](https://www.npmjs.com/package/dsh-okf-knowledge)
+[![license](https://img.shields.io/npm/l/dsh-okf-knowledge)](./LICENSE)
+
 [English](./README.md) | 简体中文
 
 为 DeepSeek Harness 提供按项目组织、可读可编辑的知识库，基于
 [Open Knowledge Format (OKF) v0.2](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)。
 知识是带 YAML frontmatter 的纯 Markdown——不是不可见的向量库——用户可以直接查看、审核和修改每一条知识原文。
+
+> 请勿与 [`dsh-knowledge`](https://github.com/Soren-ABT/dsh-knowledge) 混淆：那是 RAG 路线的
+> 插件（分块、向量、SQLite）；本插件把知识保留为按项目组织、可直接编辑的 OKF Markdown。
+> 两者可以共存于同一个 profile——工具名、路由和 UI 入口互不冲突。
 
 ## 功能
 
@@ -72,10 +79,10 @@ npm test
 npm run build
 ```
 
-本地安装到 profile：
+从本地源码安装（替代 npm 正式版）：
 
 ```bash
-dsh plugin --profile web add /path/to/dsh-okf-knowledge-plugin
+dsh plugin --profile web add /path/to/dsh-okf-knowledge
 ```
 
 ## 许可证

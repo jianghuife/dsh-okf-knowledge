@@ -1,11 +1,19 @@
 # dsh-okf-knowledge
 
+[![npm](https://img.shields.io/npm/v/dsh-okf-knowledge)](https://www.npmjs.com/package/dsh-okf-knowledge)
+[![license](https://img.shields.io/npm/l/dsh-okf-knowledge)](./LICENSE)
+
 English | [简体中文](./README.zh-CN.md)
 
 A DeepSeek Harness plugin that gives every project a human-readable, human-editable knowledge
 base in the [Open Knowledge Format (OKF) v0.2](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md).
 Knowledge is plain Markdown with YAML frontmatter — never an invisible vector store — so users
 can inspect, audit, and edit every entry.
+
+> Not to be confused with [`dsh-knowledge`](https://github.com/Soren-ABT/dsh-knowledge), a
+> RAG-style plugin (chunking, embeddings, SQLite). This plugin keeps knowledge as editable
+> OKF Markdown scoped per project. The two can coexist in one profile — tool names, routes,
+> and UI entries do not collide.
 
 ## What it adds
 
@@ -78,10 +86,10 @@ npm test        # vitest
 npm run build   # dist/index.js (host, ESM) + dist/client.js (web loader factory)
 ```
 
-Local install into a profile:
+Install a local checkout instead of the npm release:
 
 ```bash
-dsh plugin --profile web add /path/to/dsh-okf-knowledge-plugin
+dsh plugin --profile web add /path/to/dsh-okf-knowledge
 ```
 
 ## License
